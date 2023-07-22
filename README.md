@@ -16,7 +16,7 @@ Replit deploy (includes documentation and GUI):
 
 ### Run on Repl.it:
 
-1. Navigate to [https://repl.it/github/liamo2/postgres-express-rest](https://repl.it/github/liamo2/postgres-express-rest)
+1. Navigate to [https://reseller925.liamo2.repl.co/](https://reseller925.liamo2.repl.co/)
 2. Wait for the repl to start
 3. Use the REPLIT webview URL as the base URL for the REST API (See examples with CURL below), or visit the index page to interact with the database using the database.
 
