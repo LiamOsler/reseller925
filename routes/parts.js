@@ -126,16 +126,16 @@ router.delete('/number/:number', function(req, res, next) {
 
 // Function to get the company-specific table name based on the company name
 function getCompanyTable(companyName) {
-    // Define the mapping of company names to table prefixes here.
+    // Define the mapping of company names to table prefixes for lines tables here.
     // For example:
     const companyTableMap = {
-        "X": "X_parts925",
-        "Y": "Y_parts925",
+        "X": "X_lines925",
+        "Y": "Y_lines925",
         // Add more entries as needed for other companies.
     };
 
     // Return the table name based on the company name, or use a default table name if not found
-    return companyTableMap[companyName.toUpperCase()] || "parts925";
+    return companyTableMap[companyName.toUpperCase()] || "lines925";
 }
 
 module.exports = router;

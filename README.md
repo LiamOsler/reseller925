@@ -72,20 +72,10 @@ Clients are able to
 - Purchase orders:
   - Purchase orders are generated for each company from which parts are ordered
   - Purchase orders for company X and Y are derived from the purchase order submitted by the client to company Z.
+  - When a purchase order for company Z is created, the system generates purchase orders for company X and company Y
 
 ## API Documentation:
 
-### Companies:
-
-#### Path: '/companies/:id/parts'
-Methods: ['GET']
-
-**GET:** Returns a list of parts offered by a specific company (Company X or Company Y).
-
-```bash
-curl --request GET \
-  --url http://localhost:4000/companies/X/parts
-```
 
 ### Parts:
 
@@ -109,7 +99,7 @@ POST body:
 | `part_description` | text  |
 | `quantity_on_hand` | int   |
 
-The `company_id` field indicates which company is adding the part. The `part_number` is automatically generated, and the new part or an error is returned.
+The `company_id` field indicates which company is adding the part. The `part_number` is automatically generated, and the new part or an error is returned. Company IDs can be found in the `companies` table. Company IDs for this assignment are X, Y, and Z letters, prefixed to the table name. For example, company X's table is `X_parts925`.
 
 ```bash
 curl --request POST \
@@ -529,25 +519,107 @@ module.exports = router;
 
 ```
 
-Including a function getCompanyTable allows us to map the company ID to the appropriate table name:
+To handle the generation of purchase orders for Company X and Company Y when a purchase order for Company Z is created, we need to update the POST route for creating purchase orders:
 
-```js 
+### Purchase Orders:
+```js
+var express = require('express');
+var router = express.Router();
+
+var db = require('../database/db');
+
+/* GET all purchase orders */
+router.get('/', function(req, res, next) {
+    var companyTable = getCompanyTable(req.query.company_name);
+
+    db.any(`
+        SELECT * 
+        FROM public.${companyTable}_pos925
+    `)
+    .then(function(data) {
+        res.json(data);
+    })
+    .catch(function(error) {
+        res.json(error);
+    });
+        
+});
+
+/* POST a new purchase order */
+router.post('/', function(req, res, next) {
+    var poCustomer = req.body.po_customer;
+    var poDate = req.body.po_date;
+    var companyName = req.body.company_name;
+    var companyTable = getCompanyTable(companyName);
+
+    // Insert the purchase order for Company Z
+    db.one(`
+        INSERT INTO public.${companyTable}_pos925
+        (created_at, po_date, client_id)
+        VALUES(now(), $1, $2)
+        RETURNING po_number, po_date, client_id;
+    `, [poDate, poCustomer])
+    .then(function(dataZ) {
+        const poNumberZ = dataZ.po_number;
+        
+        // Generate purchase orders for Company X and Company Y
+        // You may need to adjust the column names according to your database schema.
+        db.task(async t => {
+            // Create purchase order for Company X
+            const dataX = await t.one(`
+                INSERT INTO public.X_pos925
+                (created_at, po_date, client_id)
+                VALUES(now(), $1, $2)
+                RETURNING po_number;
+            `, [poDate, poCustomer]);
+
+            const poNumberX = dataX.po_number;
+            // You can now use poNumberX to insert corresponding lines into the X_lines925 table.
+
+            // Create purchase order for Company Y
+            const dataY = await t.one(`
+                INSERT INTO public.Y_pos925
+                (created_at, po_date, client_id)
+                VALUES(now(), $1, $2)
+                RETURNING po_number;
+            `, [poDate, poCustomer]);
+
+            const poNumberY = dataY.po_number;
+            // You can now use poNumberY to insert corresponding lines into the Y_lines925 table.
+
+            return { poNumberZ, poNumberX, poNumberY };
+        })
+        .then(function(data) {
+            res.json(data);
+        })
+        .catch(function(error) {
+            console.log(error);
+            res.json(error);
+        });
+    })
+    .catch(function(error) {
+        console.log(error);
+        res.json(error);
+    });
+});
+
+// Rest of the routes...
+
 // Function to get the company-specific table name based on the company name
 function getCompanyTable(companyName) {
-    // Define the mapping of company names to table prefixes here.
+    // Define the mapping of company names to table prefixes for lines tables here.
     // For example:
     const companyTableMap = {
-        "X": "X_pos925",
-        "Y": "Y_pos925",
-        "Z": "Z_pos925"
+        "X": "X_lines925",
+        "Y": "Y_lines925",
         // Add more entries as needed for other companies.
     };
 
     // Return the table name based on the company name, or use a default table name if not found
-    return companyTableMap[companyName.toUpperCase()] || "pos925";
+    return companyTableMap[companyName.toUpperCase()] || "lines925";
 }
-```
 
-Variations on this function can be then used in the other routes to map the company ID to the appropriate table name, like in the POS and lines routes:
-```js
+module.exports = router;
+
+```
 
