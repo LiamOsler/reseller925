@@ -3,11 +3,11 @@
 **Date:** 2023-07-17
 **Course:** CSCI 4140 Advanced Databases, Dalhousie University
 
+## Description:
+Create a web application that allows users to create, read, update and delete (CRUD) data from a Purchase Order database. The application should be able to handle requests and responses based on the specified company's context.
+
 
 ## Quick Start:
-
-## Quick Start:
-Repository:
 
 Public Github repo for ease of access:
 
@@ -32,10 +32,7 @@ Replit deploy (includes documentation and GUI):
 6. Navigate to [`http://localhost:4000`](http://localhost:4000) to see the index page and read this documentation.
 7. Use the API and GUI to interact with the database with the base URL 
    [`http://localhost:4000`](http://localhost:4000)
-   e.g. 
-   [`http://localhost:4000/parts`](http://localhost:4000/parts)
-## Description:
-Create a web application that allows users to create, read, update and delete (CRUD) data from a Purchase Order database.
+
 
 Clients are able to 
 - List parts
@@ -321,7 +318,6 @@ curl --request GET \
 ```
 
 By including the `company_id` field in the API routes, the application can now handle requests and responses based on the authenticated company's context. Ensure that the appropriate authentication and authorization mechanisms are in place to secure these routes.
-
 
 
 ### Clients:

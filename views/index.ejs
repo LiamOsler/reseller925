@@ -1,11 +1,1599 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<%- include ('partials/header') %>
+
+<body>
+
+    <%- include ('partials/nav') %>
+
+    <div class="container-fluid bg-dark pt-5">
+        <div class = "container-fluid pt-5" id = "interface">
+          	<h1 class = "text-white">Parts925 API GUI</h1>
+            <p class = "text-white">GUI items use XHR to GET, POST, PUT and DELETE data from the database using a REST API</p>
+            <div class = "row g-3">
+                <div class = "col-12 col-xl-6">
+                    <div class = "card p-3 ">    
+                        <h2>Clients</h2>
+                        
+                        <div id = "clients-table">
+                            <table class="table table-striped table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">client_id</th>
+                                        <th scope="col">name</th>
+                                        <th scope="col">city</th>
+                                    </tr>
+                                </thead>
+                                <tbody id = "clients-table-body">
+                                </tbody>
+                            </table>
+                            <button class = "btn btn-primary" id = "get-clients-btn" onclick="loadClientData()">Refresh</button>
+
+                        </div>
+                        <ul class="nav nav-pills py-2" id="clientsTab" role="tablist">
+                          <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="get-tab-client" data-bs-toggle="tab" data-bs-target="#get-tab-client-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Get</button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="post-tab-client-client" data-bs-toggle="tab" data-bs-target="#post-tab-client-client-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Post</button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="put-tab-client" data-bs-toggle="tab" data-bs-target="#put-tab-client-pane" type="button" role="tab" aria-controls="put-tab-client-pane" aria-selected="false">Put</button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="delete-tab-client" data-bs-toggle="tab" data-bs-target="#delete-tab-client-pane" type="button" role="tab" aria-controls="delete-tab-client-pane" aria-selected="false">Delete</button>
+                          </li>
+
+                        </ul>
+                        <div class="tab-content" id="clientsTabContent">
+                          <div class="tab-pane fade show active" id="get-tab-client-pane" role="tabpanel" aria-labelledby="get-tab-client" tabindex="0">
+                            <div class = "row g-3">
+                              <div class = "col col-12 col-sm-6 col-lg-6">
+                                  <form class = "form-control h-100" id = "get-clients">
+                                      <h2>Get all clients:</h2>
+                                      <input class = "form-control btn btn-primary" type="submit" value="Get">
+                                  </form>
+                              </div>
+  
+                              <div class = "col col-12 col-sm-6 col-lg-6">
+                                  <form class = "form-control h-100" id = "find-client">
+                                      <h2>Get by client ID:</h2>
+                                      <label for="user-id">client_id:</label><br>
+                                      <input class = "form-control" class = "form-control" type="text" id="client-id" name="client-id" required><br>
+                                      <input class = "form-control btn btn-primary" type="submit" value="Get">
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="tab-pane fade" id="post-tab-client-client-pane" role="tabpanel" aria-labelledby="post-tab-client-client" tabindex="0">
+                            <div class = "row g-3">
+                              <div class = "col col-12 col-sm-6 col-lg-6">
+                                  <form class = "form-control h-100" id = "create-client">
+                                      <h2>Create new client:</h2>
+                                      <label for="client-name">Name:</label><br>
+                                      <input class = "form-control" type="text" id="client-name" name="client-name" required><br>
+                                      <label for="client-city">City:</label><br>
+                                      <input class = "form-control" type="text" id="client-city" name="client-city" required><br>
+                                      <input class = "form-control btn btn-primary" type="submit" value="Post">
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="tab-pane fade" id="put-tab-client-pane" role="tabpanel" aria-labelledby="put-tab-client" tabindex="0">
+                              <div class = "row g-3">
+
+                                <div class = "col col-12 col-sm-6 col-lg-6">
+                                  <form class = "form-control h-100" id = "update-client">
+                                      <h2>Update client:</h2>
+                                      <label for="client-id-update">client_id:</label><br>
+                                      <input class = "form-control" type="text" id="client-id-update" name="client-id-update" required><br>
+                                      <label for="client-name-update">Name:</label><br>
+                                      <input class = "form-control" type="text" id="client-name-update" name="client-name-update" required><br>
+                                      <label for="client-city-update">City:</label><br>
+                                      <input class = "form-control" type="text" id="client-city-update" name="client-city-update" required><br>
+                                      <input class = "form-control btn btn-primary" type="submit" value="Put">
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="tab-pane fade" id="delete-tab-client-pane" role="tabpanel" aria-labelledby="delete-tab-client" tabindex="0">
+                            <div class = "row g-3">
+                              <div class = "col col-12 col-sm-6 col-lg-6">
+                                  <form class = "form-control h-100" id = "delete-client">
+                                      <h2>Delete client:</h2>
+                                      <label for="client-id-delete">client_id:</label><br>
+                                      <input class = "form-control" type="text" id="client-id-delete" name="client-id-delete" required><br>
+                                      <input class = "form-control btn btn-primary" type="submit" value="Delete">
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class = "col-12 col-xl-6">
+                    <div class = "card p-3">    
+                        <h2>Parts</h2>
+                        <div id = "parts-table">
+                          <table class="table table-striped table-hover table-bordered">
+                              <thead>
+                                  <tr>
+                                      <th scope="col">part_number</th>
+                                      <th scope="col">part_name</th>
+                                      <th scope="col">part_description</th>
+                                  </tr>
+                              </thead>
+                              <tbody id = "parts-table-body">
+                              </tbody>
+                          </table>
+                          <button class = "btn btn-primary" id = "get-clients-btn" onclick="loadPartsData()">Refresh</button>
+                        </div>
+                        <ul class="nav nav-pills py-2" id="partsTab" role="tablist">
+                          <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="get-tab-part" data-bs-toggle="tab" data-bs-target="#get-tab-part-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Get</button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="post-tab-part-part" data-bs-toggle="tab" data-bs-target="#post-tab-part-part-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Post</button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="put-tab-part" data-bs-toggle="tab" data-bs-target="#put-tab-part-pane" type="button" role="tab" aria-controls="put-tab-part-pane" aria-selected="false">Put</button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="delete-tab-part" data-bs-toggle="tab" data-bs-target="#delete-tab-part-pane" type="button" role="tab" aria-controls="delete-tab-part-pane" aria-selected="false">Delete</button>
+                          </li>
+
+                        </ul>
+                        <div class="tab-content" id="partsTabContent">
+                          <div class="tab-pane fade show active" id="get-tab-part-pane" role="tabpanel" aria-labelledby="get-tab-part" tabindex="0">
+                            <div class = "row g-3">
+                              <div class = "col col-12 col-sm-6 col-lg-6">
+                                <form class = "form-control h-100" id = "get-parts">
+                                    <h2>Get all parts:</h2>
+                                    <input class = "form-control btn btn-primary" type="submit" value="Get">
+                                </form>
+                            </div>
+                            
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                                <form class = "form-control h-100" id = "find-part">
+                                    <h2>Get by part number:</h2>
+                                    <label for="part-number">part_number:</label><br>
+                                    <input class = "form-control" type="text" id="part-number" name="part-number" required><br>
+                                    <input class = "form-control btn btn-primary" type="submit" value="Get">
+                                </form>
+                            </div>
+                            </div>
+                          </div>
+
+                          <div class="tab-pane fade" id="post-tab-part-part-pane" role="tabpanel" aria-labelledby="post-tab-part-part" tabindex="0">
+                            <div class = "row g-3">
+                              <div class = "col col-12 col-sm-6 col-lg-6">
+                                  <form class = "form-control h-100" id = "create-part">
+                                      <h2>Create a new part:</h2>
+                                      <label for="part-name-create">Name:</label><br>
+                                      <input class = "form-control" type="text" id="part-name-create" name="part-name-create" required><br>
+                                      <label for="part-price-create">Price:</label><br>
+                                      <input class = "form-control" type="text" id="part-price-create" name="part-price-create" required><br>
+                                      <label for="part-description-create">Description:</label>
+                                      <input class = "form-control" type="text" id="part-description-create" name="part-description-create" required><br>
+                                      <label for="quantity-create">Quantity on Hand:</label>
+                                      <input class = "form-control" type="text" id="quantity-create" name="quantity-create" required><br>
+                                      <input class = "form-control btn btn-primary" type="submit" value="Post">
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="tab-pane fade" id="put-tab-part-pane" role="tabpanel" aria-labelledby="put-tab-part" tabindex="0">
+                              <div class = "row g-3">
+                            
+                                <div class = "col col-12 col-sm-6 col-lg-6">
+                                  <form class = "form-control h-100" id = "update-part">
+                                      <h2>Update a part:</h2>
+                                      <label for="part-number-update">part_number:</label><br>
+                                      <input class = "form-control" type="text" id="part-number-update" name="part-number-update" required><br>
+                                      <label for="part-name-update">Name:</label><br>
+                                      <input class = "form-control" type="text" id="part-name-update" name="part-name-update" required><br>
+                                      <label for="part-price-update">Price:</label><br>
+                                      <input class = "form-control" type="text" id="part-price-update" name="part-price-update" required><br>
+                                      <label for="part-description-update">Description:</label>
+                                      <input class = "form-control" type="text" id="part-description-update" name="part-description-update" required><br>
+                                      <label for="quantity-update">Quantity on Hand:</label>
+                                      <input class = "form-control" type="text" id="quantity-update" name="quantity-update" required><br>
+                                      <input class = "form-control btn btn-primary" type="submit" value="Put">
+                                  </form>
+                              </div>
+
+
+                            </div>
+                          </div>
+
+                          <div class="tab-pane fade" id="delete-tab-part-pane" role="tabpanel" aria-labelledby="delete-tab-part" tabindex="0">
+                            <div class = "row g-3">
+                              <div class = "col col-12 col-sm-6 col-lg-6">
+                                <form class = "form-control h-100" id = "delete-part">
+                                    <h2>Delete a part:</h2>
+                                    <label for="part-number-delete">part_number:</label><br>
+                                    <input class = "form-control" type="text" id="part-number-delete" name="part-number-delete" required><br>
+                                    <input class = "form-control btn btn-primary" type="submit" value="Delete">
+                                </form>
+                            </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class = "col-12 ">
+                    <div class = "card p-3 h-100">
+                        <h2>Purchase Orders</h2>
+                        <div id = "pos-table">
+                          <table class="table table-striped table-hover table-bordered">
+                              <thead>
+                                  <tr>
+                                      <th scope="col">po_number</th>
+                                      <th scope="col">client_id</th>
+                                      <th scope="col">po_date</th>
+                                      <th scope="col">view</th>
+                                  </tr>
+                              </thead>
+                              <tbody id = "pos-table-body">
+                              </tbody>
+                          </table>
+                          <button class = "btn btn-primary" id = "get-clients-btn" onclick="loadPOSData()">Refresh</button>
+                        </div>
+                        <div class = "row g-3">
+                          
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                                <form class = "form-control h-100" id = "get-pos">
+                                    <h2>Get all purchase orders:</h2>
+                                    <input class = "form-control btn btn-primary" type="submit" value="Get">
+                                </form>
+                            </div>
+
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                                <form class = "form-control h-100" id = "get-pos-number">
+                                    <h2>Get purchase order by purchase order number:</h2>
+                                    <label for="po-number-get">po_number:</label><br>
+                                    <input class = "form-control" type="text" id="po-number-get" name="po-number" required><br>
+                                    <input class = "form-control btn btn-primary" type="submit" value="Get">
+                                </form>
+                            </div>
+
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                              <form class = "form-control h-100" id = "create-pos">
+                                  <h2>Create new purchase order:</h2>
+                                  <label for="po-customer-create">client_id:</label><br>
+                                  <input class = "form-control" type="text" id="po-customer-create" name="po-customer-create" required><br>
+                                  <label for="po-date-create">po_date:</label><br>
+                                  <input class = "form-control" type="date" id="po-date-create" name="po-date-create" required><br>
+                                  <input class = "form-control btn btn-primary" type="submit" value="Post">
+                              </form>
+                            </div>
+                            
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                              <form class = "form-control h-100" id = "edit-pos">
+                                <h2>Edit a purchase order:</h2>
+                                <label for="po-number-edit">po_number:</label><br>
+                                <input class = "form-control" type="text" id="po-number-edit" name="po-number-edit" required><br>
+                                <label for="po-customer-edit">po_customer:</label><br>
+                                <input class = "form-control" type="text" id="po-customer-edit" name="po-customer-edit" required><br>
+                                <label for="po-date-edit">po_date:</label><br>
+                                <input class = "form-control" type="date" id="po-date-edit" name="po-date-edit" required><br>
+                                <input class = "form-control btn btn-primary" type="submit" value="Put">
+                              </form>
+                            </div>
+
+                            
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                              <form class = "form-control h-100" id="get-all-lines"> 
+                                <h2>Get all lines</h2>
+                                <input class = "form-control btn btn-primary" type="submit" value="Get">
+                              </form>
+                            </div>
+
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                              <form class = "form-control h-100" id = "create-line">
+                                <h2>Add line to purchase order:</h2>
+                                <label for="po-number-add-line">po_number:</label><br>
+                                <input class = "form-control" type="text" id="po-number-add-line" name="po-number-add-line" required><br>
+                                <label for="part-number-add-line">part_number:</label><br>
+                                <input class = "form-control" type="text" id="part-number-add-line" name="part-number-add-line" required><br>
+                                <label for="quantity-add-line">quantity:</label><br>
+                                <input class = "form-control" type="text" id="quantity-add-line" name="quantity-add-line" required><br>
+                                <label for = "price-add-line">price:</label><br>
+                                <input class = "form-control" type="text" id="price-add-line" name="price-add-line" required><br>
+                                <input class = "form-control btn btn-primary" type="submit" value="Post">
+                              </form>
+                            </div>
+
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                              <form class = "form-control h-100" id="get-line"> 
+                                <h2>Get line by line number:</h2>
+                                <label for="line-number-get">line_number:</label><br>
+                                <input class = "form-control" type="text" id="line-number-get" name="line-number-get" required><br>
+                                <input class = "form-control btn btn-primary" type="submit" value="Get">
+                              </form>
+                            </div>
+
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                              <form class = "form-control h-100" id = "delete-line">
+                                <h2>Delete line:</h2>
+                                <label for="line-number-delete">line_number:</label><br>
+                                <input class = "form-control" type="text" id="line-number-delete" name="line-number-delete" required><br>
+                                <input class = "form-control btn btn-primary" type="submit" value="Delete">
+                              </form>
+                            </div>
+
+                            <div class = "col col-12 col-sm-6 col-lg-6">
+                              <form class = "form-control h-100" id = "get-po-lines">
+                                <h2>Get all lines for a purchase order:</h2>
+                                <label for="po-number-lines">po_number:</label><br>
+                                <input class = "form-control" type="text" id="po-number-lines" name="po-number-lines" required><br>
+                                <input class = "form-control btn btn-primary" type="submit" value="Get">
+                              </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container text-white py-5">
+<p>This project is a RESTful API that allows users to create, read, update and delete (CRUD) data from a Purchase Order database.</p>
+<h2>Contents</h2>
+<ul>
+<li><a href="#quick-start">Quick Start:</a>
+<ul>
+<li><a href="#run-locally">Run Locally:</a></li>
+<li><a href="#run-on-replit">Run on Repl.it:</a></li>
+</ul>
+</li>
+<li><a href="#description">Description:</a>
+<ul>
+<li><a href="#technical-inventory">Technical Inventory</a></li>
+</ul>
+</li>
+<li><a href="#api-endpoints">API Endpoints</a>
+<ul>
+<li><a href="#index">Index:</a>
+<ul>
+<li><a href="#path-">path: '/',</a></li>
+</ul>
+</li>
+<li><a href="#clients">Clients:</a>
+<ul>
+<li><a href="#path-clients">path: '/clients'</a></li>
+<li><a href="#path-clientsidid">path: '/clients/id/:id',</a></li>
+</ul>
+</li>
+<li><a href="#parts">Parts:</a>
+<ul>
+<li><a href="#path-parts">path: '/parts',</a></li>
+<li><a href="#path-partsnumbernumber">path: '/parts/number/:number'</a></li>
+</ul>
+</li>
+<li><a href="#purchase-orders">Purchase Orders:</a>
+<ul>
+<li><a href="#path-pos">path: '/pos',</a></li>
+<li><a href="#path-posnumbernumber">path: '/pos/number/:number',</a></li>
+<li><a href="#path-posnumbernumberreport">path: '/pos/number/:number/report',</a></li>
+</ul>
+</li>
+<li><a href="#purchase-order-lines">Purchase Order Lines:</a>
+<ul>
+<li><a href="#path-posnumbernumberlines">path: '/pos/number/:number/lines',</a></li>
+<li><a href="#path-lines">path: '/lines',</a></li>
+<li><a href="#path-linesnumbernumber">path: '/lines/number/:number',</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#defining-the-rest-middleware">Defining the REST middleware:</a>
+<ul>
+<li><a href="#creating-a-new-part">Creating a new part:</a></li>
+<li><a href="#updating-a-part">Updating a part:</a></li>
+<li><a href="#retrieving-a-purchase-order">Retrieving a purchase order:</a></li>
+<li><a href="#generating-a-purchase-order">Generating a purchase order:</a></li>
+</ul>
+</li>
+<li><a href="#deployment">Deployment:</a>
+<ul>
+<li><a href="#github">Github</a></li>
+<li><a href="#replit">Repl.it</a></li>
+</ul>
+</li>
+<li><a href="#references">References</a></li>
+</ul>
+<h2>Quick Start:</h2>
+<p>Repository:
+https://git.cs.dal.ca/osler/csci4140-assignment2</p>
+<p>Public Github repo for ease of access:
+https://github.com/LiamOsler/postgres-express-REST</p>
+<p>Replit deploy (includes documentation and GUI):
+https://postgres-express-rest.liamo2.repl.co/</p>
+<h3>Run Locally:</h3>
+<ol>
+<li>Clone the repository:
+<code>git clone https://git.cs.dal.ca/osler/csci4140-assignment2.git</code></li>
+<li>Import the postgres database dump from <code>dump.sql</code> to your postgres database</li>
+<li>Set the .env file to the correct database url and password</li>
+<li>Install dependencies:
+<code>npm install</code></li>
+<li>Start the server: <code>npm start</code></li>
+<li>Navigate to <a href="http://localhost:4000"><code>http://localhost:4000</code></a> to see the index page and read this documentation.</li>
+<li>Use the API and GUI to interact with the database with the base URL
+<a href="http://localhost:4000"><code>http://localhost:4000</code></a>
+e.g.
+<a href="http://localhost:4000/parts"><code>http://localhost:4000/parts</code></a></li>
+</ol>
+<p>.env file (if your database is on localhost and the password is postgres)</p>
+<pre><code>DATABASE_URL=localhost
+DATABASE_PASSWORD=postgres
+</code></pre>
+<p>You can also change the db connection string in <code>database/db.js</code> to connect to your database.</p>
+<pre><code class="language-javascript">
+const dbPass = process.env.DB_PASS;
+const dbUrl = process.env.DB_URL;
+
+var db = pgp(`postgres://postgres:${dbPass}@${dbUrl}:5432/postgres`)
+</code></pre>
+<p>Modifying the port in <code>/bin/www</code> will allow you to change the port the server runs on.</p>
+<pre><code class="language-javascript">var port = normalizePort(process.env.PORT || '4000');
+app.set('port', port);
+</code></pre>
+<h3>Run on Repl.it:</h3>
+<ol>
+<li>Navigate to <a href="https://repl.it/github/liamo2/postgres-express-rest">https://repl.it/github/liamo2/postgres-express-rest</a></li>
+<li>Wait for the repl to start</li>
+<li>Use the REPLIT webview URL as the base URL for the REST API (See examples with CURL below), or visit the index page to interact with the database using the database.</li>
+</ol>
+<h2>Description:</h2>
+<p>Create a web application that allows users to create, read, update and delete (CRUD) data from a Purchase Order database.</p>
+<p>Clients are able to</p>
+<ul>
+<li>List parts</li>
+<li>Prepare a purchase order</li>
+<li>Submit a purchase order for a number of parts</li>
+<li>Query the status of a purchase order</li>
+</ul>
+<p>Functionality:</p>
+<ul>
+<li>Lists parts for sale
+<ul>
+<li>Returns list of parts, including part number, description, etc</li>
+<li>Excludes quantity on hand, etc</li>
+</ul>
+</li>
+<li>Find information about a specific part given the part number</li>
+<li>List information about purchase orders</li>
+<li>Prepare a purchase order
+<ul>
+<li>User enters information about the purchase order, including part number, quantity, etc.</li>
+</ul>
+</li>
+<li>Submit a purchase order by invocation of a method that takes the purchase order number as a parameter.</li>
+</ul>
+<h3>Technical Inventory</h3>
+<ul>
+<li><strong>Node.js</strong>: A JavaScript runtime engine.</li>
+<li><strong>Express</strong>: A web application framework for Node.js.</li>
+<li><strong>PostgreSQL</strong>: An open-source relational database management system.</li>
+</ul>
+<h2>API Endpoints</h2>
+<h3>Index:</h3>
+<h4>path: '/',</h4>
+<p>methods: [ 'GET' ]</p>
+<p><strong>GET:</strong> Returns the API documentation/GUI</p>
+<h3>Clients:</h3>
+<h4>path: '/clients'</h4>
+<p>methods: [ 'GET', 'POST' ]</p>
+<p><strong>GET:</strong> Returns a list of clients</p>
+<pre><code class="language-bash">curl --request GET \
+  --url http://localhost:4000/clients
+</code></pre>
+<pre><code class="language-bash">curl --request GET \
+  --url https://postgres-express-rest.liamo2.repl.co/clients
+</code></pre>
+<p><strong>POST:</strong>   Create a new client</p>
+<p>POST body:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_name</code></td>
+<td>text</td>
+</tr>
+<tr>
+<td><code>client_city</code></td>
+<td>text</td>
+</tr>
+</tbody>
+</table>
+<p>client_id is automatically generated.</p>
+<pre><code class="language-bash">curl --request POST \
+  --url http://localhost:4000/clients \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'client_name=&quot;John Doe&quot;&amp;client_city=&quot;New York&quot;'
+</code></pre>
+<pre><code class="language-bash">curl --request POST \
+  --url https://postgres-express-rest.liamo2.repl.co/clients \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'client_name=&quot;John Doe&quot;&amp;client_city=&quot;New York&quot;'
+</code></pre>
+<h4>path: '/clients/id/:id',</h4>
+<p>methods: [ 'GET', 'PUT', 'DELETE' ]</p>
+<p><strong>GET:</strong> Returns a client given the client id</p>
+<pre><code class="language-bash">curl --request GET \
+  --url http://localhost:4000/clients/id/1
+</code></pre>
+<pre><code class="language-bash">curl --request GET \
+  --url https://postgres-express-rest.liamo2.repl.co/clients/id/1
+</code></pre>
+<p><strong>PUT:</strong> Update a client given the client id</p>
+<p>PUT body:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_id</code></td>
+<td>int</td>
+</tr>
+<tr>
+<td><code>client_name</code></td>
+<td>text</td>
+</tr>
+<tr>
+<td><code>client_city</code></td>
+<td>text</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">curl --request PUT \
+  --url http://localhost:4000/clients/id/1 \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'client_id=1&amp;client_name=John Doe&amp;client_city=New York'
+</code></pre>
+<pre><code class="language-bash">curl --request PUT \
+  --url https://postgres-express-rest.liamo2.repl.co/clients/id/1 \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'client_id=1&amp;client_name=John Doe&amp;client_city=New York'
+</code></pre>
+<h3>Parts:</h3>
+<h4>path: '/parts',</h4>
+<p>methods: [ 'GET', 'POST' ]</p>
+<p><strong>GET:</strong> Returns a list of parts</p>
+<pre><code class="language-bash">curl --request GET \
+  --url http://localhost:4000/parts
+</code></pre>
+<pre><code class="language-bash">curl --request GET \
+  --url https://postgres-express-rest.liamo2.repl.co/parts
+</code></pre>
+<p><strong>POST:</strong> Create a new part</p>
+<p>POST body:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>part_name</code></td>
+<td>text</td>
+</tr>
+<tr>
+<td><code>part_description</code></td>
+<td>text</td>
+</tr>
+<tr>
+<td><code>quantity_on_hand</code></td>
+<td>int</td>
+</tr>
+</tbody>
+</table>
+<p>part_number is automatically generated and the new part or error is returned.</p>
+<pre><code class="language-bash">curl --request POST \
+  --url http://localhost:4000/parts \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'part_name=Ryzen 3600x&amp;part_description=Ryzen 5 Processor&amp;quantity_on_hand=10'
+</code></pre>
+<pre><code class="language-bash">curl --request POST \
+  --url https://postgres-express-rest.liamo2.repl.co/parts \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'part_name=Ryzen 3600x&amp;part_description=Ryzen 5 Processor&amp;quantity_on_hand=10'
+</code></pre>
+<h4>path: '/parts/number/:number'</h4>
+<p>methods: [ 'GET', 'PUT', 'DELETE' ]</p>
+<p><strong>GET:</strong> Returns a part given the part number</p>
+<pre><code class="language-bash">curl --request GET \
+  --url http://localhost:4000/parts/number/1
+</code></pre>
+<pre><code class="language-bash">curl --request GET \
+  --url https://postgres-express-rest.liamo2.repl.co/parts/number/1
+</code></pre>
+<p><strong>PUT:</strong> Update a part given the part number</p>
+<p>PUT body:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>part_number</code></td>
+<td>int</td>
+</tr>
+<tr>
+<td><code>part_name</code></td>
+<td>text</td>
+</tr>
+<tr>
+<td><code>part_description</code></td>
+<td>text</td>
+</tr>
+<tr>
+<td><code>quantity_on_hand</code></td>
+<td>int</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">curl --request PUT \
+  --url http://localhost:4000/parts/number/1 \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'part_number=1&amp;part_name=Ryzen 3600x&amp;part_description=Ryzen 5 Processor&amp;quantity_on_hand=20'
+</code></pre>
+<pre><code class="language-bash">curl --request PUT \
+  --url https://postgres-express-rest.liamo2.repl.co/parts/number/1 \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'part_number=1&amp;part_name=Ryzen 3600x&amp;part_description=Ryzen 5 Processor&amp;quantity_on_hand=20'
+</code></pre>
+<p><strong>DELETE:</strong> Delete a part given the part number</p>
+<h3>Purchase Orders:</h3>
+<h4>path: '/pos',</h4>
+<p>methods: [ 'GET', 'POST' ]</p>
+<p><strong>GET:</strong> Returns a list of purchase orders</p>
+<pre><code class="language-bash">curl --request GET \
+  --url http://localhost:4000/pos
+</code></pre>
+<pre><code class="language-bash">curl --request GET \
+  --url https://postgres-express-rest.liamo2.repl.co/pos
+</code></pre>
+<p><strong>POST:</strong> Create a new purchase order</p>
+<p>POST body:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_id</code></td>
+<td>int</td>
+</tr>
+<tr>
+<td><code>po_date</code></td>
+<td>date</td>
+</tr>
+</tbody>
+</table>
+<p>po_number is automatically generated.</p>
+<pre><code class="language-bash">curl --request POST \
+  --url http://localhost:4000/pos \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'client_id=1&amp;po_date=2021-01-01'
+</code></pre>
+<pre><code class="language-bash">curl --request POST \
+  --url https://postgres-express-rest.liamo2.repl.co/pos \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data 'client_id=1&amp;po_date=2021-01-01'
+</code></pre>
+<h4>path: '/pos/number/:number',</h4>
+<p>methods: [ 'GET', 'PUT', 'DELETE' ],</p>
+<p><strong>GET:</strong> Returns a purchase order given the purchase order number</p>
+<p><strong>PUT:</strong> Update a purchase order given the purchase order number</p>
+<p>PUT body:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>po_number</code></td>
+<td>int</td>
+</tr>
+<tr>
+<td><code>client_id</code></td>
+<td>int</td>
+</tr>
+<tr>
+<td><code>po_date</code></td>
+<td>date</td>
+</tr>
+</tbody>
+</table>
+<p><strong>DELETE:</strong> Delete a purchase order given the purchase order number</p>
+<h4>path: '/pos/number/:number/report',</h4>
+<p>methods: [ 'GET' ],</p>
+<p><strong>GET:</strong> Returns a report of a purchase order given the purchase order number</p>
+<h3>Purchase Order Lines:</h3>
+<h4>path: '/pos/number/:number/lines',</h4>
+<p>methods: [ 'GET' ],</p>
+<p><strong>GET:</strong> Returns a list of purchase order lines given the purchase order number</p>
+<h4>path: '/lines',</h4>
+<p>methods: [ 'GET', 'POST' ],</p>
+<p><strong>GET:</strong> Returns a list of purchase order lines</p>
+<p><strong>POST:</strong> Create a new purchase order line</p>
+<p>POST body:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>po_number</code></td>
+<td>int</td>
+</tr>
+<tr>
+<td><code>part_number</code></td>
+<td>int</td>
+</tr>
+<tr>
+<td><code>quantity</code></td>
+<td>int</td>
+</tr>
+<tr>
+<td><code>line_price</code></td>
+<td>numeric</td>
+</tr>
+</tbody>
+</table>
+<p>line_number is automatically generated.</p>
+<h4>path: '/lines/number/:number',</h4>
+<p>methods: [ 'GET', 'DELETE' ],</p>
+<p><strong>GET:</strong> Returns a purchase order line given the purchase order line number</p>
+<p><strong>DELETE:</strong> Delete a purchase order line given the purchase order line number</p>
+<p>path: '/lines/po/:poNumber',
+methods: [ 'GET' ],</p>
+<p><strong>GET:</strong> Returns a list of purchase order lines given the purchase order number</p>
+<h2>Defining the REST middleware:</h2>
+<p>Middleware is defined in <code>app.js</code>. The middleware is used to parse the request body and to set up the routes. The routes are defined in:
+<code>routes/clients.js</code>.
+<code>routes/parts.js</code>
+<code>routes/purchase_orders.js</code>.
+<code>routes/lines.js</code>.</p>
+<p>A simple example of a REST route is retrieving all of the data from the <code>parts925</code> table. This can be done by specifying the route and the query in <code>routes/parts.js</code>:</p>
+<pre><code class="language-js">var express = require('express');
+var router = express.Router();
+
+var db = require('../database/db');
+
+/* GET all parts */
+router.get('/', function(req, res, next) {
+    db.any(`SELECT part_number, part_name, part_description FROM public.parts925`, [true])
+        .then(function(data) {
+            res.json(data);
+        })
+        .catch(function(error) {
+            res.send(error);
+        });
+});
+
+module.exports = router;
+</code></pre>
+<p>This file is referenced in <code>app.js</code>:</p>
+<pre><code class="language-js">var partsRouter = require('./routes/parts');
+
+app.use('/parts', partsRouter);
+</code></pre>
+<p>This loads the data from the <code>parts925</code> table and displays it in JSON format at the <code>/parts</code> route.</p>
+<p>So, if you are to visit the base URL of the project (by default runs on port 4000), you will see the data from the <code>parts925</code> table displayed in JSON format:</p>
+<p><a href="http://localhost:4000/parts">http://localhost:4000/parts</a></p>
+<p><a href="https://postgres-express-rest.liamo2.repl.co/parts">https://postgres-express-rest.liamo2.repl.co/parts</a></p>
+<p>Say for instance you wanted to retrieve the data from the <code>parts925</code> table where the <code>id</code> is equal to 1. You can do this by specifying the route and the query in <code>routes/parts.js</code>:</p>
+<pre><code class="language-js">/* GET parts by part number */
+router.get('/number/:number', function(req, res, next) {
+    var partNumber = req.params.number;
+
+    db.any(`SELECT part_name, part_number, part_number_cpu, part_description FROM public.parts925 WHERE &quot;part_number&quot; = $1 `, [partNumber])
+        .then(function(data) {
+            res.json(data);
+        })
+        .catch(function(error) {
+            res.status(500);
+            res.send(error);
+        });
+});
+</code></pre>
+<p><code>/number/:number</code> corresponds to the route <code>parts/number/</code> followed by a part number. So, if you are to visit the following URL, you will see the data from the <code>Parts925</code> table where the <code>part_number</code> is equal to the part number specified in the URL:</p>
+<p><a href="http://localhost:4000/parts/number/1">http://localhost:4000/parts/number/1</a></p>
+<p><a href="https://postgres-express-rest.liamo2.repl.co/parts/number/1">https://postgres-express-rest.liamo2.repl.co/parts/number/1</a></p>
+<p>This will provide a JSON response with the data from the <code>Parts925</code> table where the <code>part_number</code> is equal to 1:</p>
+<pre><code class="language-json">[
+    {
+        &quot;part_name&quot;: &quot;Ryzen 3600x&quot;,
+        &quot;part_number&quot;: 1,
+        &quot;part_description&quot;: &quot;Ryzen 5 Processors&quot;
+    }
+]
+</code></pre>
+<h3>Creating a new part:</h3>
+<p>To create a new part, you will need to create a new route in <code>routes/parts.js</code>. This route will be a POST request to the <code>/</code> route. This route will accept the following parameters:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>part_name</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>part_description</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>quantity_on_hand</code></td>
+<td>integer</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-js">router.post('/', function(req, res, next) {
+    var partName = req.body.part_name;
+    var partDescription = req.body.part_description;
+    var quantityOnHand = req.body.quantity_on_hand;
+
+    console.log(partName, partDescription, quantityOnHand);
+
+    db.any(`
+        INSERT INTO public.parts925
+            (created_at, part_name, part_description, quantity_on_hand)
+        VALUES(now(), $1, $2, $3);
+        `, [partName, partDescription, quantityOnHand])
+        .then(function(data) {
+            console.log(data);
+            res.json(data);
+        })
+        .catch(function(error) {
+            console.log(error);
+            res.send(error);
+        });
+});
+</code></pre>
+<h3>Updating a part:</h3>
+<p>To update a part, you will need to create a new route in <code>routes/parts.js</code>. This route will be a PUT request to the <code>/parts/number</code> route.</p>
+<p>Example: submit a <strong>PUT</strong> request to <code>/parts/number/1</code> with the following parameters:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>part_name</td>
+<td>text</td>
+</tr>
+<tr>
+<td>part_description</td>
+<td>text</td>
+</tr>
+<tr>
+<td>quantity_on_hand</td>
+<td>int</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">curl --location --request PUT 'http://localhost:4000/parts/number/1' \
+
+</code></pre>
+<pre><code class="language-js">router.put('/number/:number', function(req, res, next) {
+    var partNumber = req.params.number;
+    var partName = req.body.part_name;
+    var partDescription = req.body.part_description;
+    var quantityOnHand = req.body.quantity_on_hand;
+
+    db.any(`
+        UPDATE public.parts925
+        SET part_name=$2, part_description=$3, quantity_on_hand=$4
+        WHERE part_number=$1;
+    `, [partNumber, partName, partDescription, quantityOnHand])
+    .then(function(data) {
+        res.json(data);
+    })
+    .catch(function(error) {
+        res.status(500);
+        res.send(error);
+    });
+});
+</code></pre>
+<p>This can be called from the front-end using the following code:</p>
+<pre><code class="language-js">var getParts = document.getElementById('get-parts');
+getParts.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/parts/', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+        alert('Parts Found:' + xhr.responseText);
+    } else {
+        alert('Error: ' + xhr.responseText);
+    }
+  };
+  xhr.send();
+});
+</code></pre>
+<p>Which references a form in the HTML called <code>get-parts</code>:</p>
+<pre><code class="language-html">&lt;form id = &quot;get-parts&quot;&gt;
+    &lt;h2&gt;Get all parts:&lt;/h2&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Get&quot;&gt;
+&lt;/form&gt;
+</code></pre>
+<p>You could also call this route using curl from the command line:</p>
+<pre><code class="language-bash">curl --request GET \
+  --url http://localhost:4000/parts
+</code></pre>
+<pre><code class="language-bash">curl --request GET \
+  --url https://postgres-express-rest.liamo2.repl.co/parts
+</code></pre>
+<h3>Retrieving a purchase order:</h3>
+<pre><code class="language-js">/* GET parts by part number */
+router.get('/number/:number', function(req, res, next) {
+    var partNumber = req.params.number;
+
+    db.any(`
+        SELECT * 
+        FROM public.pos925 
+        WHERE &quot;po_number&quot; = $1
+        `, [partNumber])
+        .then(function(data) {
+            res.json(data);
+        })
+        .catch(function(error) {
+            res.status(500);
+            res.send(error);
+        });
+});
+</code></pre>
+<p>Deleting a part:</p>
+<pre><code class="language-js">router.delete('/number/:number', function(req, res, next) {
+    var partNumber = req.params.number;
+
+    db.any(`
+        DELETE FROM public.parts925
+        WHERE part_number=$1;
+    `, [partNumber])
+    .then(function(data) {
+        res.json(data);
+    })
+    .catch(function(error) {
+        res.status(500);
+        res.json(error);
+    }); 
+});
+</code></pre>
+<p>Deleting a purchase order:</p>
+<pre><code class="language-js">router.delete('/number/:number', function(req, res, next) {
+    var poNumber = req.params.number;
+    
+    db.any(`
+        DELETE FROM public.pos925
+        WHERE po_number=$1;
+        `, [poNumber])
+        .then(function(data) {
+            res.json(data);
+        })
+        .catch(function(error) {
+            res.status(500);
+            res.json(error);
+        }
+    );
+});
+</code></pre>
+<h3>Generating a purchase order:</h3>
+<p>On the server, a function called purchaseorder is defined using the following code:</p>
+<pre><code class="language-sql">CREATE OR REPLACE FUNCTION purchaseOrder (reqNumber int)
+
+RETURNS text AS $statement$
+
+declare
+	number int;
+  clientID int;
+  clientname text;
+  date text;
+  amount numeric;
+  lines text;
+
+BEGIN
+  -- SELECT * into number FROM pos925;
+  SELECT po_number, client_id, po_date into number, clientID, date FROM pos925 WHERE po_number = reqNumber;
+  
+  SELECT SUM(line_quantity * line_price) into amount as purchase_order_total
+  FROM lines925
+  GROUP BY po_number having po_number = reqNumber;
+
+  select  clients925.client_name into clientname
+  from pos925
+  join clients925 on pos925.client_id = clients925.client_id AND pos925.po_number = reqNumber;
+
+  SELECT ARRAY(SELECT CONCAT('line_number : ', line_number) || ', ' ||  CONCAT('line_price : ', line_price)  || ', ' || CONCAT('line_quantity : ', line_quantity) || ', ' ||  CONCAT('part_number : ', part_number)
+  FROM lines925
+  WHERE po_number = reqNumber
+  ) into lines;
+
+  if number is null then
+    RETURN (text('{error: No Purchase Order Found}'));
+  end if;
+
+  RETURN concat(
+        'po_number, client_name, date, lines', chr(10),
+        number, ',', clientname, ',', date, ',', lines
+    );
+END;
+</code></pre>
+<p>This function is then called from the following route:</p>
+<pre><code class="language-js">router.get('/number/:number/report', function(req, res, next) {
+    var poNumber = req.params.number;
+    db.any(`
+        SELECT public.purchaseorder($1);
+        `, [poNumber])
+    .then(function(data) {
+            res.json(data);
+        }
+    )
+    .catch(function(error) {
+        res.json(error);
+    });
+});
+</code></pre>
+<p>You can call this route from the command line using curl:</p>
+<pre><code class="language-bash">curl --request GET \
+  --url http://localhost:4000/pos/number/2/report
+</code></pre>
+<pre><code class="language-bash">curl --request GET \
+  --url https://postgres-express-rest.liamo2.repl.co/pos/number/2/report
+</code></pre>
+<p>And you will get a plaintext response like this:</p>
+<pre><code class="language-csv">po_number, client_name, date, lines
+John Doe,2023-06-05,[{line_number : 11, line_price : 123.99, line_quantity : 2, part_number : 2},{line_number : 12, line_price : 123.99, line_quantity : 4, part_number : 2}]
+</code></pre>
+<p>OR</p>
+<pre><code class="language-json">{error: &quot;No Purchase Order Found&quot;}
+</code></pre>
+<p>If the purchase order is not found.</p>
+<h3>Deployment:</h3>
+<h4>Github</h4>
+<p>For ease of integration with Repl.it, I am mirroring the application on Github. You can view the public repository <a href="https://github.com/LiamOsler/postgres-express-REST">here</a></p>
+<h4>Repl.it</h4>
+<p>For ease of access, I have deployed the application on the online IDE/deployment platform Repl.it. You can view the application <a href="https://postgres-express-rest.liamo2.repl.co/">here</a> and you can view the IDE with the code <a href="https://replit.com/@LiamO2/postgres-express-REST">here</a>. Note, if the application is not dormant, it may take a second to start running.</p>
+<h1>References</h1>
+<p>Net Ninja Express Tutorials:
+https://www.youtube.com/watch?v=yXEesONd_54</p>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="purchaseOrderLabel">Purchase Order</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" >
+            <p>PO Number: <span id = "purchaseOrderModalNumber"></span></p>
+            <p>Client: <span id = "clientName"></span></p>
+            <p>Client City: <span id = "clientAddress"></span></p>
+            <p>Report Content: <span id = "reportContent"></span></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+
+
+        function showPurchaseOrder(poNumber){
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/pos/number/' + poNumber +"/report/", true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              var data = JSON.parse(xhr.responseText);
+              document.getElementById('reportContent').innerHTML = xhr.responseText;
+              document.getElementById('purchaseOrderModalNumber').innerHTML = data[0].po_number;
+              document.getElementById('clientName').innerHTML = data[0].client_name;
+              document.getElementById('clientAddress').innerHTML = data[0].client_city;
+              $('#purchaseOrderModal').modal('show');
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        }
+
+        function loadClientData(){
+          document.getElementById('clients-table-body').innerHTML = 'Loading...';
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/clients/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              document.getElementById('clients-table-body').innerHTML = '';
+
+              for(item of JSON.parse(xhr.responseText)){
+                document.getElementById('clients-table-body').innerHTML += '<tr><td>' + item.client_id + '</td><td>' + item.client_name + '</td><td>' + item.client_city + '</td></tr>' ;
+              }
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        }
+
+        function loadPartsData(){
+          document.getElementById('parts-table-body').innerHTML = 'Loading...';
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/parts/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              document.getElementById('parts-table-body').innerHTML = '';
+              for(item of JSON.parse(xhr.responseText)){
+                document.getElementById('parts-table-body').innerHTML += '<tr><td>' + item.part_number + '</td><td>' + item.part_name + '</td><td>' + item.part_description + '</td></tr>' ;
+              }
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        }
+        
+        function loadPOSData(){
+          document.getElementById('pos-table-body').innerHTML = 'Loading...';
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/pos/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              document.getElementById('pos-table-body').innerHTML = '';
+              for(item of JSON.parse(xhr.responseText)){
+                document.getElementById('pos-table-body').innerHTML += 
+                  '<tr><td>' + item.po_number + 
+                    '</td><td>' + item.client_id + 
+                      '</td><td>' + item.po_date + 
+                        '</td><td>' + 
+                          `<button type="button" class="btn btn-primary" onclick="showPurchaseOrder(${item.po_number})" data-bs-toggle="modal" data-bs-target="#purchaseOrderModal">
+                            View
+                          </button>`
+                      +'</td></tr>' ;
+                
+              }
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        }
+
+        loadClientData();
+        loadPartsData();
+        loadPOSData();
+
+
+        var createLine = document.getElementById('create-line');
+        createLine.addEventListener('submit', function(e){
+            e.preventDefault();
+            var poNumber = document.getElementById('po-number-add-line').value;
+            var partNumber = document.getElementById('part-number-add-line').value;
+            var quantity = document.getElementById('quantity-add-line').value;
+            var price = document.getElementById('price-add-line').value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/lines/', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+              if (xhr.status === 200) {
+                  alert('Line Created:' + xhr.responseText);
+              } else {
+                  alert('Error: ' + xhr.responseText);
+              }
+            };
+          xhr.send(JSON.stringify({po_number:poNumber, part_number:partNumber, quantity:quantity, price:price}));
+        })
+
+        var getLine = document.getElementById('get-line');
+        getLine.addEventListener('submit', function(e){
+          e.preventDefault();
+          var lineNumber = document.getElementById('line-number-get').value;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/lines/number/' + lineNumber, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Line Retrieved:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        })
+
+        getAllLines = document.getElementById('get-all-lines');
+        getAllLines.addEventListener('submit', function(e){
+          e.preventDefault();
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/lines/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Lines Retrieved:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        });
+        
+        var getPOLines = document.getElementById('get-po-lines');
+        getPOLines.addEventListener('submit', function(e){
+          e.preventDefault();
+          var poNumber = document.getElementById('po-number-lines').value;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/pos/number/' + poNumber + '/lines/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Lines Retrieved:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        })
+
+        var deleteLine = document.getElementById('delete-line');
+        deleteLine.addEventListener('submit', function(e){
+          e.preventDefault();
+          var lineNumber = document.getElementById('line-number-delete').value;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('DELETE', '/lines/number/' + lineNumber, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Line Deleted:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        })
+
+
+        var createPOS = document.getElementById('create-pos');
+        createPOS.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var poCustomer = document.getElementById('po-customer-create').value;
+          var poDate = document.getElementById('po-date-create').value;
+        
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '/pos/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Purchase Order Created:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send(JSON.stringify({po_customer:poCustomer, po_date:poDate}));
+        }) 
+
+        var editPOS = document.getElementById('edit-pos');
+          editPOS.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var poNumber = document.getElementById('po-number-edit').value;
+          var poCustomer = document.getElementById('po-customer-edit').value;
+          var poDate = document.getElementById('po-date-edit').value;
+        
+          var xhr = new XMLHttpRequest();
+          xhr.open('PUT', '/pos/number/' + poNumber, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Purchase Order Updated:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send(JSON.stringify({po_number: poNumber, po_customer:poCustomer, po_date:poDate}));
+        })
+
+
+        var getPOs = document.getElementById('get-pos');
+        getPOs.addEventListener('submit', function(e) {
+          e.preventDefault();
+      
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/pos/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Purchase Orders:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        });
+
+        var getPONumber = document.getElementById('get-pos-number');
+        getPONumber.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var poNumber = document.getElementById('po-number-get').value;
+      
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/pos/number/' + poNumber, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Purchase Orders:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        });
+
+
+        var deletePart = document.getElementById('delete-part');
+        deletePart.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var partNumber = document.getElementById('part-number-delete').value;
+      
+          var xhr = new XMLHttpRequest();
+          xhr.open('DELETE', '/parts/number/' + partNumber, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Part Deleted:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        });
+
+
+        var getParts = document.getElementById('get-parts');
+        getParts.addEventListener('submit', function(e) {
+          e.preventDefault();
+      
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/parts/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Parts Found:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        });
+
+        var findPart = document.getElementById('find-part');
+        findPart.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var partNumber = document.getElementById('part-number').value;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/parts/number/' + partNumber, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Parts Found:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        });
+
+        var createPart = document.getElementById('create-part');
+        createPart.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var partName = document.getElementById('part-name-create').value;
+            var partPrice = document.getElementById('part-price-create').value;
+            var partDescription = document.getElementById('part-description-create').value;
+            var quantity = document.getElementById('quantity-create').value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/parts/', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Part Created:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+            };
+            xhr.send(JSON.stringify({
+                "part_name": partName,
+                "part_price": partPrice,
+                "part_description": partDescription,
+                "quantity": quantity
+            }));
+        });
+
+        var updatePart = document.getElementById('update-part');
+
+        updatePart.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var partNumber = document.getElementById('part-number-update').value;
+            var partName = document.getElementById('part-name-update').value;
+            var partPrice = document.getElementById('part-price-update').value;
+            var partDescription = document.getElementById('part-description-update').value;
+            var quantity = document.getElementById('quantity-update').value;
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('PUT', '/parts/number/' + partNumber, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                alert('Part Updated:' + xhr.responseText);
+                } else {
+                    alert('Error: ' + xhr.responseText);
+                }
+            };
+            xhr.send(JSON.stringify({
+                "part_name": partName,
+                "part_price": partPrice,
+                "part_description": partDescription,
+                "quantity": quantity
+            }));
+        });
+
+
+
+        
+        var getClients = document.getElementById('get-clients');
+        getClients.addEventListener('submit', function(e) {
+          e.preventDefault();
+      
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/clients/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Clients Found:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        });
+
+
+        var findClient = document.getElementById('find-client');
+        findClient.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var clientID = document.getElementById('client-id').value;
+      
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/clients/id/' + clientID, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Client Found:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        });
+      
+
+        var createClient = document.getElementById('create-client');
+        createClient.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var clientName = document.getElementById('client-name').value;
+          var clientCity = document.getElementById('client-city').value;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '/clients/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              alert('Client Created:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+            xhr.send(JSON.stringify({client_name: clientName, client_city: clientCity}));
+        });
+
+        var updateClient = document.getElementById('update-client');
+        updateClient.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var clientID = document.getElementById('client-id-update').value;
+          var clientName = document.getElementById('client-name-update').value;
+          var clientCity = document.getElementById('client-city-update').value;
+
+      
+          var xhr = new XMLHttpRequest();
+          xhr.open('PUT', '/clients/id/' + clientID, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Client Updated:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+                }
+            };
+            xhr.send(JSON.stringify({client_name: clientName, client_city: clientCity}));
+        });
+
+        var deleteClient = document.getElementById('delete-client');
+        deleteClient.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var clientID = document.getElementById('client-id-delete').value;
+      
+          var xhr = new XMLHttpRequest();
+          xhr.open('DELETE', '/clients/id/' + clientID, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Client Deleted:' + xhr.responseText);
+            } else {
+                alert('Error: ' + xhr.responseText);
+            }
+          };
+          xhr.send();
+        });
+        
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
+    </script>
+</body>
+
 </html>

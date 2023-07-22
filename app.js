@@ -3,9 +3,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var pgp = require('pg-promise')();
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var clientsRouter = require('./routes/clients');
+var partsRouter = require('./routes/parts');
+var posRouter = require('./routes/pos');
+var linesRouter = require('./routes/lines');
+const listEndpoints = require('express-list-endpoints')
+
 
 var app = express();
 
@@ -19,8 +25,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/clients', clientsRouter);
+app.use('/parts', partsRouter);
+app.use('/pos', posRouter);
+app.use('/lines', linesRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -37,5 +48,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+console.log(listEndpoints(app));
+
 
 module.exports = app;
